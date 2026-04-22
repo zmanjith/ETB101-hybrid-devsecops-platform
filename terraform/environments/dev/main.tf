@@ -1,6 +1,14 @@
 terraform {
   required_version = ">= 1.5.0"
-  
+  required_providers {
+	aws = {
+		source = "hashicorp/aws"
+		version = "~>5.0" 
+	}
+  }
+
+
+  # storing tfstate here
   backend "s3" {
 	bucket		= "hybrid-devsecops-tf-state-etb101-bucket1-0417"
 	key		= "dev/terraform.tfstate"
