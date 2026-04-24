@@ -13,7 +13,7 @@ spec:
         app: nginx
     spec:
       containers:
-      - name: nginx
-        image: nginx
-        ports:
-        - containerPort: 80
+        - name: app
+          image: 491377098012.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:latest
+          ports:
+            - containerPort: 3000
