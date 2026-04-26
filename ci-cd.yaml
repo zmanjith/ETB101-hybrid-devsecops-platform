@@ -1,10 +1,11 @@
 name: Build and Push to ECR # Workflow Name
 
 on:
-  # trigger - meaning when this workflow should run. Whenver you run git push to main branch, this workflow will run
   push:
+    # trigger - meaning when this workflow should run. Whenver you run git push to main branch, this workflow will run
     branches:
       - main
+
 jobs:
   # creates a fresh machine with 'ubuntu-latest', no docker, no aws login, no kubectl, nothing. We have to do everything from scratch
   build:
