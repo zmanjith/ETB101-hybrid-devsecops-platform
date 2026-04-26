@@ -1,3 +1,4 @@
+---
 name: Build and Push to ECR # Workflow Name
 
 on:
@@ -5,36 +6,31 @@ on:
     # trigger - meaning when this workflow should run. Whenver you run git push to main branch, this workflow will run
     branches:
       - main
-
 jobs:
   # creates a fresh machine with 'ubuntu-latest', no docker, no aws login, no kubectl, nothing. We have to do everything from scratch
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code # pull the GitHub repository code to the machine created.
-        uses: actions/checkout@v3
-          # here it "uses" the checkout action to pull the code. This is a pre-built action by GitHub, we just have to call it.
-          # v3 is the version of the action, we can also use v2 or v1 but v3 is the latest and most stable one.
-      - name: Configure AWS credentials
+        uses: actions/checkout@v3 # here it "uses" the checkout action to pull the code. This is a pre-built action by GitHub, we just have to call it.
+      - name: Configure AWS credentials # v3 is the version of the action, we can also use v2 or v1 but v3 is the latest and most stable one.
         uses: aws-actions/configure-aws-credentials@v2 # this is another pre-built action by GitHub to configure AWS credentials. We will use this to login to ECR and push our Docker image.
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # we are using GitHub secrets to store our AWS credentials securely.
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} #  We will create these secrets in the GitHub repository settings.
           aws-region: us-east-1
-
       - name: Login to ECR # login to the ECR registry using the AWS CLI. This is required to push the Docker image to ECR.
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS
-          --password-stdin ${{ secrets.AWS_ACCOUNT_ID
-          }}.dkr.ecr.us-east-1.amazonaws.com
-
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login \ 
+          --username AWS \
+          --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
       - name: Build Docker Image
         run: docker build -t hybrid-devsecops-etb101:latest -f app/backend/Dockerfile . # build the Docker image using the Dockerfile in the app/backend directory. The image will be tagged as hybrid-devsecops-etb101:latest
-
       - name: Tag image # tag the Docker image with the ECR repository URI. This is required to push the image to ECR.
-        run: docker tag hybrid-devsecops-etb101:latest ${{ secrets.AWS_ACCOUNT_ID
-          }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:latest
-
+        run: |
+          docker tag hybrid-devsecops-etb101:latest \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:latest
       - name: Push image # push the Docker image to ECR using the AWS CLI
-        run: docker push ${{ secrets.AWS_ACCOUNT_ID
-          }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:latest
+        run: |
+          docker push \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:latest
