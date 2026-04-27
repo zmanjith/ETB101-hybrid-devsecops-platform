@@ -17,6 +17,6 @@ spec:
         - name: ecr-secret
       containers:
         - name: app
-          image: 491377098012.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:latest
+          image: 491377098012.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v2
           ports:
             - containerPort: 3000
