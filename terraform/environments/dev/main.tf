@@ -15,7 +15,7 @@ terraform {
 	region 		= "us-east-1"
 	
 	#keep this (still valid)
-	#the .tfstate file is store in S3. But, it has to be locked to avoid conflict in simultaneous access by developers
+	#the .tfstate file is store in S3. But, it has to be locked to avoid conflict in simultaneous access 
 	dynamodb_table	= "terraform-locks"
 	
 	# optional ( new update)

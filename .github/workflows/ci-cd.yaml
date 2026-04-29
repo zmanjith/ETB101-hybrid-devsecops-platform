@@ -23,11 +23,11 @@ jobs:
               run: |
                   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
             - name: Build Docker Image
-              run: docker build -t hybrid-devsecops-etb101:v2 -f app/backend/Dockerfile
+              run: docker build -t hybrid-devsecops-etb101:v3 -f app/backend/Dockerfile
                   app/backend # build the Docker image using the Dockerfile in the app/backend directory. The image will be tagged as hybrid-devsecops-etb101:latest
             - name: Tag image # tag the Docker image with the ECR repository URI. This is required to push the image to ECR.
               run: |
-                  docker tag hybrid-devsecops-etb101:v2 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v2
+                  docker tag hybrid-devsecops-etb101:v3 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v3
             - name: Push image # push the Docker image to ECR using the AWS CLI
               run: |
-                  docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v2
+                  docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v3
