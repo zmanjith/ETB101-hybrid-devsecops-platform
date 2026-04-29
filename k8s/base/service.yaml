@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: devsecops-service
   namespace: default
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    app: nginx
+    app: devsecops
   ports:
     - port: 80
       targetPort: 3000
-      nodePort: 30080
