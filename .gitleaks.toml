@@ -1,0 +1,19 @@
+title = "Custom Gitleaks Config"
+
+[[rules]]
+id = "generic-password"
+description = "Detect generic passwords"
+regex = '''(?i)password\s*=\s*["'].*["']'''
+tags = ["password"]
+
+[[rules]]
+id = "aws-secret-custom"
+description = "Detect AWS Secret Key (loose)"
+regex = '''aws_secret_access_key\s*=\s*[A-Za-z0-9\/+=]{20,}'''
+tags = ["aws", "key"]
+
+[[rules]]
+id = "api-key-generic"
+description = "Generic API key detection"
+regex = '''(?i)(api_key|apikey|token)\s*=\s*["']?[A-Za-z0-9_\-]{16,}["']?'''
+tags = ["api", "key"]
