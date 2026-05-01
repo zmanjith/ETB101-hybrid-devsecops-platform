@@ -19,8 +19,11 @@ jobs:
               run: |
                   curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
                   chmod +x gitleaks
+              # we are using the official Gitleaks Docker image (ghcr.io/gitleaks/gitleaks) to run the scan. We mount the GitHub workspace to allow Gitleaks to access the code and scan for secrets. 
+              # We also specify a custom configuration file (.gitleaks.toml) that defines the rules for scanning. 
+              # The --redact flag is used to redact any secrets found in the logs, and --exit-code 1 will cause the build to fail if any secrets are detected.
             - name: Run Gitleaks via Docker
-              run: | # we are using the official Gitleaks Docker image (ghcr.io/gitleaks/gitleaks) to run the scan. We mount the GitHub workspace to allow Gitleaks to access the code and scan for secrets. We also specify a custom configuration file (.gitleaks.toml) that defines the rules for scanning. The --redact flag is used to redact any secrets found in the logs, and --exit-code 1 will cause the build to fail if any secrets are detected.
+              run: |
                   docker run --rm \
                     -v "${{ github.workspace }}:/repo" \
                     ghcr.io/gitleaks/gitleaks:latest detect \  # this command runs the Gitleaks scan on the code. The 'detect' parameter tells Gitleaks to scan for secrets. We specify the severity levels to check for (HIGH and CRITICAL) and set the exit code to 1 if any secrets are found. We also disable the progress output for cleaner logs.
@@ -39,10 +42,11 @@ jobs:
                   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
             - name: Build Docker Image
               run: docker build -t hybrid-devsecops-etb101:v3 -f app/backend/Dockerfile
-                  app/backend # build the Docker image using the Dockerfile in the app/backend directory. The image will be tagged as hybrid-devsecops-etb101:latest
-
+                  app/backend
+                  # build the Docker image using the Dockerfile in the app/backend directory. The image will be tagged as hybrid-devsecops-etb101:latest
+                  # we are using the official Trivy Docker image (aquasec/trivy) to run the scan. We mount the Docker socket to allow Trivy to access the Docker daemon and scan the image.
             - name: Run Trivy Scan # run Trivy scan on the Docker image to check for vulnerabilities. If any HIGH or CRITICAL vulnerabilities are found, the build will fail with exit code 1.
-              run: | # we are using the official Trivy Docker image (aquasec/trivy) to run the scan. We mount the Docker socket to allow Trivy to access the Docker daemon and scan the image.
+              run: |
                   docker run --rm \
                   -v /var/run/docker.sock:/var/run/docker.sock \
                   -v ${{ github.workspace }}:/workspace \
