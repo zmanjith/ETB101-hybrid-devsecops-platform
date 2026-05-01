@@ -19,9 +19,12 @@ jobs:
               run: |
                   curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o gitleaks
                   chmod +x gitleaks
-            - name: Run GitLeaks # run GitLeaks to scan the code for any secrets. This is a security best practice to ensure that we are not pushing any secrets to the repository.
+            - name: Run Gitleaks via Docker
               run: |
-                  ./gitleaks detect --source . --fail
+                  docker run --rm \
+                  -v "${{ github.workspace }}:/repo" \
+                  ghcr.io/gitleaks/gitleaks:latest detect \
+                  --source /repo --no-git --verbose --redact --exit-code 1
             - name: Configure AWS credentials # v3 is the version of the action, we can also use v2 or v1 but v3 is the latest and most stable one.
               uses: aws-actions/configure-aws-credentials@v2 # this is another pre-built action by GitHub to configure AWS credentials. We will use this to login to ECR and push our Docker image.
               with:
