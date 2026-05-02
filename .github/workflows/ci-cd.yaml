@@ -27,7 +27,7 @@ jobs:
         run: |
           docker run --rm \
             -v "${{ github.workspace }}:/repo" \
-            ghcr.io/gitleaks/gitleaks:latest detect \  
+            ghcr.io/gitleaks/gitleaks:latest detect \
             --source /repo \
             --no-git \
             --config /repo/.gitleaks.toml \
