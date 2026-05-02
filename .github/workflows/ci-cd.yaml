@@ -56,7 +56,7 @@ jobs:
           --severity HIGH,CRITICAL \
           --exit-code 1 \
           --no-progress \
-          hybrid-devsecops-etb101:v3
+          491377098012.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v3
       - name: Tag image # tag the Docker image with the ECR repository URI. This is required to push the image to ECR.
         run: |
           docker tag hybrid-devsecops-etb101:v3 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v3
