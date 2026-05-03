@@ -47,15 +47,12 @@ jobs:
           app/backend
           # build the Docker image using the Dockerfile in the app/backend directory. The image will be tagged as hybrid-devsecops-etb101:latest
           # we are using the official Trivy Docker image (aquasec/trivy) to run the scan. We mount the Docker socket to allow Trivy to access the Docker daemon and scan the image.
+          # this command runs the Trivy scan on the Docker image. The Trivy image expects an 'image' parameter. We specify the severity levels to check for (HIGH and CRITICAL) and set the exit code to 1 if any vulnerabilities are found. We also disable the progress output for cleaner logs.
       - name: Run Trivy Scan # run Trivy scan on the Docker image to check for vulnerabilities. If any HIGH or CRITICAL vulnerabilities are found, the build will fail with exit code 1.
-        run: |
-          docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -v ${{ github.workspace }}:/workspace \
-          aquasec/trivy image \  # this command runs the Trivy scan on the Docker image. The Trivy image expects an 'image' parameter. We specify the severity levels to check for (HIGH and CRITICAL) and set the exit code to 1 if any vulnerabilities are found. We also disable the progress output for cleaner logs.
-          --severity HIGH,CRITICAL \
-          --exit-code 1 \
-          --no-progress \
+        run: >
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock
+          aquasec/trivy image --severity HIGH,CRITICAL --exit-code 1
+          --no-progress
           491377098012.dkr.ecr.us-east-1.amazonaws.com/hybrid-devsecops-etb101:v3
       - name: Tag image # tag the Docker image with the ECR repository URI. This is required to push the image to ECR.
         run: |
