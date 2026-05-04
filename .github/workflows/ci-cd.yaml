@@ -33,6 +33,10 @@ jobs:
             --config /repo/.gitleaks.toml \
             --redact \
             --exit-code 1
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: ./terraform
       - name: Configure AWS credentials # v3 is the version of the action, we can also use v2 or v1 but v3 is the latest and most stable one.
         uses: aws-actions/configure-aws-credentials@v2 # this is another pre-built action by GitHub to configure AWS credentials. We will use this to login to ECR and push our Docker image.
         with:
